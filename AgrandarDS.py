@@ -2,6 +2,7 @@
 import cv2
 import os
 import pandas as pd
+
 def formatNum(n):
     strn = ""
     mod = 1000
@@ -9,6 +10,18 @@ def formatNum(n):
         strn+="0"
         mod/=10
     return strn+str(n)
+
+def AddValues(cols, values,bsq_idx):
+        for i in cols:
+            if cols.index(i) == 0:
+                values.append(bsq_idx[i])
+            else:
+                dicAux = list(bsq_idx[i].values())
+                if str(dicAux[0])=="nan":
+                    values.append("")
+                else:
+                    values.append((str(dicAux[0])))
+        return values
 
 cont = 0
 img_melanoma = []
@@ -26,15 +39,7 @@ for img in os.listdir('./PH2P'):
     bsq_idx = df_ph2.loc[df_ph2['Image Name']==bsq_row].to_dict()
     bsq_idx[cols[0]] = "IMD"+formatNum(num)
     values = []
-    for i in cols:
-        if cols.index(i) == 0:
-            values.append(bsq_idx[i])
-        else:
-            dicAux = list(bsq_idx[i].values())
-            if str(dicAux[0])=="nan":
-                values.append("")
-            else:
-                values.append((str(dicAux[0])))
+    values = AddValues(cols,values,bsq_idx)
     df_Nph2.loc[len(df_Nph2)] = values
     values.clear()
     num+=1
@@ -53,15 +58,7 @@ for img in os.listdir('./PH2P'):
 
         while angulo_rotacion < 360:
             bsq_idx[cols[0]] = "IMD"+formatNum(num)
-            for i in cols:
-                if cols.index(i) == 0:
-                    values.append(bsq_idx[i])
-                else:
-                    dicAux = list(bsq_idx[i].values())
-                    if str(dicAux[0])=="nan":
-                        values.append("")
-                    else:
-                        values.append((str(dicAux[0])))
+            values = AddValues(cols,values,bsq_idx)
             df_Nph2.loc[len(df_Nph2)] = values
             values.clear()
             num+=1
@@ -85,4 +82,5 @@ for img in os.listdir('./PH2P'):
                 cont +=1 
                 print(f"Imagen {img} rotada completa. Total: {cont}")
 df_Nph2.to_excel("./PH2_Extend.xlsx",index=False)
+
 
