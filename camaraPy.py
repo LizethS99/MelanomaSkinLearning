@@ -15,7 +15,7 @@ while (captura.isOpened):
             break"""
 captura.release()
 cv2.destroyAllWindows()
-
+"""Esto es una prueba"""
 
 """import cv2
 name=input("Ingrese el nombre del paciente: ")
